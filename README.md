@@ -1,21 +1,10 @@
 # roundme
 
-`roundme` is an experimental human-assisted rounding analyzer. It aims to provide recommendations to determine if an arithmetic operation should round up or down
+`roundme` is a human-assisted rounding analyzer. It helps its operator determine whether an arithmetic operation should round up or down.
 
-
-## Install
-
-Install with
-```bash
-cargo install roundme
-```
-
-To install the latest github version
-```bash
-git clone git@github.com:crytic/roundme.git
-cd roundme
-cargo install --path .
-```
+## Features
+- Recommends whether an arithmetic operation needs to round up or down
+- Generates LaTeX-based reports in PDF
 
 ## How to use
 
@@ -24,10 +13,8 @@ cargo install --path .
 - Run `roundme analyze` to analyze the configuration file
 - Run `roundme pdf` to generate a PDF (require `latexmk`)
 
-
 Running `roundme pdf` on the default configuration will generate the following:
 <img src="./images/example.png" alt="Example" width="50%" />
-
 
 ### Configuration
 
@@ -43,13 +30,7 @@ greater_than_one: ["c"] # optional
 - `less_than_one` is used for the `**` [rules](#rules) *(raw string comparison and sensible to space)*
 - `greater_than_one` is used for the `**` [rules](#rules) *(raw string comparison and sensible to space)*
 
-
 See the [balancer V2](./examples/balancer/README.md) example.
-
-## Features
-- Recommend what arithemic operation needs to round up or down
-- Generate latex-based report in PDF
-
 
 ## Rules
 
@@ -62,3 +43,17 @@ See the [balancer V2](./examples/balancer/README.md) example.
 - `A ** B`
   - `If A>=1 => rounding(A), rounding(B)`
   - `If A<1 => rounding(A), ! rounding(B)` (if A is below 1, the rounding direction of the exponent is the inverse of the expected rounding)
+
+## Install
+
+Install with
+```bash
+cargo install roundme
+```
+
+To install the latest GitHub version
+```bash
+git clone git@github.com:crytic/roundme.git
+cd roundme
+cargo install --path .
+```
