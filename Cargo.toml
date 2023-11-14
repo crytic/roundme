@@ -1,0 +1,36 @@
+[package]
+name = "roundme"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+authors = ["Trail of Bits <opensource@trailofbits.com>"]
+description = "Rounding analyzer"
+readme = "README.md"
+repository = "https://serde.rs/"
+license = "AGPL-3.0"
+license-file = "LICENSE"
+keywords = ["security", "blockchain", "arithmetics"]
+categories = ["command-line-utilities"]
+
+
+[dependencies]
+lalrpop-util = { version = "0.20.0", features = ["lexer", "unicode"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.8"
+anyhow = "1.0"
+clap = "3.0"
+latex = "0.3.1"
+
+[build-dependencies] 
+lalrpop = "0.20.0"
+
+[dev-dependencies] 
+tempfile = "3.3.0" # for tests
+cargo-audit = "0.18.3"
+
+
+[workspace.metadata.dylint]
+libraries = [
+    { git = "https://github.com/trailofbits/dylint", pattern = "examples/general/*" },
+    { git = "https://github.com/trailofbits/dylint", pattern = "examples/supplementary/*" },
+]

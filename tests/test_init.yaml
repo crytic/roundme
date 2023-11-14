@@ -1,0 +1,4 @@
+---
+formula: (a * b) / (c * d)
+round_up: true
+# less_than_one: ["a", "b"] -- replace this if needed

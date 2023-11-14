@@ -1,0 +1,4 @@
+---
+# outGivenIn
+formula: b * (1 - ((bi)/(bi+ai))** (wi/wo))
+round_up: false
