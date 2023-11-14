@@ -1,5 +1,4 @@
 use std::str::FromStr;
-use std::cell::RefCell;
 use crate::ast::{Expr, Opcode, Rounding};
 
 use lalrpop_util::ParseError;
@@ -20,8 +19,8 @@ ExprOp: Opcode = { // (3)
 };
 
 FactorOp: Opcode = {
-    "*" => Opcode::Mul(RefCell::new(Rounding::Init)),
-    "/" => Opcode::Div(RefCell::new(Rounding::Init)),
+    "*" => Opcode::Mul(Rounding::Init),
+    "/" => Opcode::Div(Rounding::Init),
     "**" => Opcode::Pow,
 };
 

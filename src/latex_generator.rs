@@ -26,7 +26,7 @@ fn visit(expr: &Expr) -> String {
 
             let op_str = match op {
                 Opcode::Div(op_rounding) => {
-                    let direction: &str = match *op_rounding.borrow() {
+                    let direction: &str = match *op_rounding {
                         Rounding::Init => "",
                         Rounding::Up => r"\uparrow",
                         Rounding::Down => r"\downarrow",
@@ -37,7 +37,7 @@ fn visit(expr: &Expr) -> String {
                 Opcode::Add => String::from("} + {"),
                 Opcode::Sub => String::from("} - {"),
                 Opcode::Mul(op_rounding) => {
-                    let direction: &str = match *op_rounding.borrow() {
+                    let direction: &str = match *op_rounding {
                         Rounding::Init => "",
                         Rounding::Up => r"\uparrow",
                         Rounding::Down => r"\downarrow",
