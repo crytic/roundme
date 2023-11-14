@@ -8,10 +8,11 @@ description = "Rounding analyzer"
 readme = "README.md"
 repository = "https://serde.rs/"
 license = "AGPL-3.0"
-license-file = "LICENSE"
 keywords = ["security", "blockchain", "arithmetics"]
 categories = ["command-line-utilities"]
-
+exclude = [
+    "examples/*",
+]
 
 [dependencies]
 lalrpop-util = { version = "0.20.0", features = ["lexer", "unicode"] }

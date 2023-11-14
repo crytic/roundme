@@ -7,11 +7,15 @@
 
 Install with
 ```bash
+cargo install roundme
+```
+
+To install the latest github version
+```bash
 git clone git@github.com:crytic/roundme.git
 cd roundme
 cargo install --path .
 ```
-
 
 ## How to use
 
@@ -58,4 +62,3 @@ See the [balancer V2](./examples/balancer/README.md) example.
 - `A ** B`
   - `If A>=1 => rounding(A), rounding(B)`
   - `If A<1 => rounding(A), ! rounding(B)` (if A is below 1, the rounding direction of the exponent is the inverse of the expected rounding)
-
