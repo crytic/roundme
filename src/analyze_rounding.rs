@@ -1,5 +1,4 @@
 use anyhow::Result;
-use std::cell::RefCell;
 
 use crate::ast::bool_to_rounding;
 use crate::ast::Expr;
@@ -11,16 +10,16 @@ use crate::utils;
 // Mulplication
 // Up -> A * B -> A up, B up, * up
 // Down  -> A * B -> A down, B down, * down
-fn handle_mul(rounding_direction: bool, op_rounding: &RefCell<Rounding>) -> (bool, bool) {
-    *op_rounding.borrow_mut() = bool_to_rounding(rounding_direction);
+fn handle_mul(rounding_direction: bool, op_rounding: &mut Rounding) -> (bool, bool) {
+    *op_rounding = bool_to_rounding(rounding_direction);
     (rounding_direction, rounding_direction)
 }
 
 // Div
 // Up -> A / B -> A up, B down, / up
 // Down -> A / B -> A down, B up, / down
-fn handle_div(rounding_direction: bool, op_rounding: &RefCell<Rounding>) -> (bool, bool) {
-    *op_rounding.borrow_mut() = bool_to_rounding(rounding_direction);
+fn handle_div(rounding_direction: bool, op_rounding: &mut Rounding) -> (bool, bool) {
+    *op_rounding = bool_to_rounding(rounding_direction);
     (rounding_direction, !rounding_direction)
 }
 
@@ -94,8 +93,8 @@ fn visit(expr: &Expr, rounding_direction: bool, config: &mut config::Config) -> 
             let (left_rounding, right_rounding) = match op {
                 Opcode::Add => (rounding_direction, rounding_direction),
                 Opcode::Sub => (rounding_direction, !rounding_direction),
-                Opcode::Mul(op_rounding) => handle_mul(rounding_direction, op_rounding),
-                Opcode::Div(op_rounding) => handle_div(rounding_direction, op_rounding),
+                Opcode::Mul(mut op_rounding) => handle_mul(rounding_direction, &mut op_rounding),
+                Opcode::Div(mut op_rounding) => handle_div(rounding_direction, &mut op_rounding),
                 Opcode::Pow => handle_pow(left, rounding_direction, config)?,
             };
             visit(left, left_rounding, config)?;
