@@ -6,6 +6,18 @@
 - Recommends whether an arithmetic operation needs to round up or down
 - Generates LaTeX-based reports in PDF
 
+## Rules
+
+`rounding()` is the expected rounding direction for the result (up or down)
+
+- `A + B => rounding(A), rounding(B)` (addition does not change the rounding direction)
+- `A - B => rounding(A), ! rounding(B)` (the rounding direction of the substracted element is inverse of the expected rounding)
+- `A * B => rounding(A), rounding(B), rounding(*) ` (multiplication does not change the rounding direction)
+- `A / B => rounding(A), ! rounding(B), rounding(/)` (the rounding direction of the denominator is the inverse of the expected rounding)
+- `A ** B`
+  - `If A>=1 => rounding(A), rounding(B)`
+  - `If A<1 => rounding(A), ! rounding(B)` (if A is below 1, the rounding direction of the exponent is the inverse of the expected rounding)
+
 ## How to use
 
 - Run `roundme init` to generate a default configuration file. 
@@ -31,18 +43,6 @@ greater_than_one: ["c"] # optional
 - `greater_than_one` is used for the `**` [rules](#rules) *(raw string comparison and sensible to space)*
 
 See the [balancer V2](./examples/balancer/README.md) example.
-
-## Rules
-
-`rounding()` is the expected rounding direction for the result (up or down)
-
-- `A + B => rounding(A), rounding(B)` (addition does not change the rounding direction)
-- `A - B => rounding(A), ! rounding(B)` (the rounding direction of the substracted element is inverse of the expected rounding)
-- `A * B => rounding(A), rounding(B), rounding(*) ` (multiplication does not change the rounding direction)
-- `A / B => rounding(A), ! rounding(B), rounding(/)` (the rounding direction of the denominator is the inverse of the expected rounding)
-- `A ** B`
-  - `If A>=1 => rounding(A), rounding(B)`
-  - `If A<1 => rounding(A), ! rounding(B)` (if A is below 1, the rounding direction of the exponent is the inverse of the expected rounding)
 
 ## Install
 
