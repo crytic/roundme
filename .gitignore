@@ -1,3 +1,7 @@
 /target
 /build_dir
 .vscode
+.DS_store
+config.yaml
+report.tex
+report.pdf

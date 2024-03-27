@@ -17,9 +17,9 @@ exclude = [
 [dependencies]
 lalrpop-util = { version = "0.20.0", features = ["lexer", "unicode"] }
 serde = { version = "1.0", features = ["derive"] }
+clap = { version = "4.0", features = ["derive"] }
 serde_yaml = "0.8"
 anyhow = "1.0"
-clap = "3.0"
 latex = "0.3.1"
 
 [build-dependencies] 

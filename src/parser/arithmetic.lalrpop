@@ -1,6 +1,6 @@
 use std::str::FromStr;
 use std::cell::RefCell;
-use crate::ast::{Expr, Opcode, Rounding};
+use crate::analyzer::ast::{Expr, Opcode, Rounding};
 
 use lalrpop_util::ParseError;
 
