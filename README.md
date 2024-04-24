@@ -23,7 +23,7 @@
 - Run `roundme init-sample` to generate a default configuration file. 
 - Run `roundme init` to generate user configuration file. 
 - Run `roundme analyze` to analyze the configuration file
-- Run `roundme analyze --output-format pdf` to generate a PDF (require `latexmk`)
+- Run `roundme analyze --output-format pdf` to generate a PDF (require [latexmk](https://mg.readthedocs.io/latexmk.html))
 
 Running `roundme analyze --output-format pdf` on the default configuration will generate the following:
 <img src="./images/example.png" alt="Example" width="50%" />
