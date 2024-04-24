@@ -1,11 +1,16 @@
-use std::process::Command;
-
-use crate::ast::{Expr, Opcode, Rounding};
-use crate::{config, constant};
-use anyhow::{anyhow, Result};
-use latex::{Document, DocumentClass, Section};
 use std::fs::File;
 use std::io::{self, Write};
+use std::path::PathBuf;
+use std::process::{Command, Stdio};
+use std::str::FromStr;
+
+use anyhow::{anyhow, Result};
+use latex::{Document, DocumentClass, Section};
+
+use super::DISCLAIMER;
+use crate::analyzer::ast::{Expr, Opcode, Rounding};
+use crate::parser::to_yaml_str;
+use crate::FormulaConfig;
 
 /// This function takes an expression and returns a string representation of the expression in LaTeX format.
 ///
@@ -58,12 +63,12 @@ fn visit(expr: &Expr) -> String {
 /// # Arguments
 ///
 /// * `expr` - An `Expr` struct representing the expression to be analyzed.
-/// * `config` - A `config::Config` struct containing the configuration for the analysis.
+/// * `config` - A `FormulaConfig` struct containing the configuration for the analysis.
 ///
 /// # Returns
 ///
 /// A `Result` containing a `String` with the LaTeX document, or an `anyhow::Error` if an error occurred.
-pub fn generate(expr: &Expr, config: &config::Config) -> Result<String> {
+pub fn generate(expr: &Expr, config: &FormulaConfig) -> Result<String> {
     let mut doc = Document::new(DocumentClass::Article);
 
     doc.preamble.use_package("hyperref");
@@ -75,7 +80,7 @@ pub fn generate(expr: &Expr, config: &config::Config) -> Result<String> {
     let mut section_1 = Section::new("Config");
     let output = format!(
         "\\begin{{verbatim}} {} \\end{{verbatim}}",
-        config::to_yaml_str(config)?
+        to_yaml_str(config)?
     );
     section_1.push(output.as_str());
     doc.push(section_1);
@@ -88,7 +93,7 @@ pub fn generate(expr: &Expr, config: &config::Config) -> Result<String> {
     let mut section_3 = Section::new("roundme");
     let text = format!(
         "{} For more details, visit \\url{{https://github.com/crytic/roundme}}.",
-        constant::DISCLAIMER
+        DISCLAIMER
     );
     section_3.push(text.as_str());
 
@@ -112,14 +117,20 @@ pub fn generate(expr: &Expr, config: &config::Config) -> Result<String> {
 ///
 pub fn write(rendered: &String) -> io::Result<()> {
     // Open the file in write mode, which will create or truncate it
-    let mut f = File::create("report.tex")?;
+    let path = PathBuf::from_str("report.tex")
+        .map_err(|e| io::Error::new(io::ErrorKind::Other, e.to_string()))?;
+
+    let mut f = File::create(path.as_path())?;
     // Write the rendered string to the file
     write!(f, "{rendered}")?;
 
     // Then call latexmk on it
     let exit_status = Command::new("latexmk")
-        .arg("report.tex")
         .arg("-pdf")
+        .arg("-silent")
+        .arg(path.as_os_str())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
         .status()?;
 
     // Check if latexmk command was successful

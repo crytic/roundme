@@ -1,12 +1,12 @@
 use anyhow::Result;
 use std::cell::RefCell;
 
-use crate::ast::bool_to_rounding;
-use crate::ast::Expr;
-use crate::ast::Opcode;
-use crate::ast::Rounding;
-use crate::config;
-use crate::utils;
+use super::ast::bool_to_rounding;
+use super::ast::Expr;
+use super::ast::Opcode;
+use super::ast::Rounding;
+use crate::parser::ask_yes_no;
+use crate::FormulaConfig;
 
 // Mulplication
 // Up -> A * B -> A up, B up, * up
@@ -33,11 +33,11 @@ fn handle_div(rounding_direction: bool, op_rounding: &RefCell<Rounding>) -> (boo
 fn handle_pow(
     left: &Expr,
     rounding_direction: bool,
-    config: &mut config::Config,
+    formula_config: &mut FormulaConfig,
 ) -> Result<(bool, bool)> {
     let expr_str = format!("{left}");
 
-    if config
+    if formula_config
         .less_than_one
         .as_ref()
         .map_or(false, |vec| vec.contains(&expr_str))
@@ -45,7 +45,7 @@ fn handle_pow(
         return Ok((rounding_direction, !rounding_direction));
     }
 
-    if config
+    if formula_config
         .greater_than_one
         .as_ref()
         .map_or(false, |vec| vec.contains(&expr_str))
@@ -55,23 +55,23 @@ fn handle_pow(
 
     println!("Is {} greater than 1? Y/N (yes, no)", &left);
 
-    if utils::ask_yes_no()? {
-        config.add_greater_than_one(expr_str);
+    if ask_yes_no()? {
+        formula_config.add_greater_than_one(expr_str);
         Ok((rounding_direction, rounding_direction))
     } else {
-        config.add_less_than_one(expr_str);
+        formula_config.add_less_than_one(expr_str);
         Ok((rounding_direction, !rounding_direction))
     }
 }
 
 /// This function visits an expression and analyze the rounding direction
-/// for arithmetic operations based on the given configuration.
+/// for arithmetic operations based on the given formula_configuration.
 ///
 /// # Arguments
 ///
 /// * `expr` - An expression to be visited.
 /// * `rounding_direction` - A boolean value indicating the rounding direction for arithmetic operations.
-/// * `config` - A reference to a configuration object containing information about rounding.
+/// * `formula_config` - A reference to a formula_configuration object containing information about rounding.
 ///
 /// # Returns
 ///
@@ -81,13 +81,13 @@ fn handle_pow(
 ///
 /// ```
 /// use analyze_rounding::visit;
-/// use config::Config;
+/// use FormulaConfig;
 ///
 /// let expr = Expr::Number(5);
-/// let config = Config::new();
-/// visit(&expr, true, &config);
+/// let formula_config = FormulaConfig::new();
+/// visit(&expr, true, &formula_config);
 /// ```
-fn visit(expr: &Expr, rounding_direction: bool, config: &mut config::Config) -> Result<()> {
+fn visit(expr: &Expr, rounding_direction: bool, formula_config: &mut FormulaConfig) -> Result<()> {
     match expr {
         Expr::Number(_) | Expr::Id(_) | Expr::Error => (),
         Expr::Op(left, op, right) => {
@@ -96,10 +96,10 @@ fn visit(expr: &Expr, rounding_direction: bool, config: &mut config::Config) -> 
                 Opcode::Sub => (rounding_direction, !rounding_direction),
                 Opcode::Mul(op_rounding) => handle_mul(rounding_direction, op_rounding),
                 Opcode::Div(op_rounding) => handle_div(rounding_direction, op_rounding),
-                Opcode::Pow => handle_pow(left, rounding_direction, config)?,
+                Opcode::Pow => handle_pow(left, rounding_direction, formula_config)?,
             };
-            visit(left, left_rounding, config)?;
-            visit(right, right_rounding, config)?;
+            visit(left, left_rounding, formula_config)?;
+            visit(right, right_rounding, formula_config)?;
         }
     };
     Ok(())
@@ -111,11 +111,15 @@ fn visit(expr: &Expr, rounding_direction: bool, config: &mut config::Config) -> 
 ///
 /// * `expr` - The expression to analyze.
 /// * `rounding_direction` - The direction of rounding to use.
-/// * `config` - The configuration to use for the analysis.
+/// * `formula_config` - The formula_configuration to use for the analysis.
 ///
 /// # Returns
 ///
 /// Returns a `Result` indicating whether the analysis was successful or not.
-pub fn analyze(expr: &Expr, rounding_direction: bool, config: &mut config::Config) -> Result<()> {
-    visit(expr, rounding_direction, config)
+pub fn analyze(
+    expr: &Expr,
+    rounding_direction: bool,
+    formula_config: &mut FormulaConfig,
+) -> Result<()> {
+    visit(expr, rounding_direction, formula_config)
 }
