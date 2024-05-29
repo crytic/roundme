@@ -25,6 +25,7 @@ fn visit(expr: &Expr) -> String {
     match expr {
         Expr::Number(n) => n.to_string(),
         Expr::Id(n) => n.to_string(),
+        Expr::Negative(e) => format!("(-{e})"),
         Expr::Op(left, op, right) => {
             let left_str = visit(left);
             let right_str = visit(right);

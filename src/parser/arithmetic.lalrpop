@@ -6,15 +6,15 @@ use lalrpop_util::ParseError;
 
 grammar;
 
-Tier<Op,NextTier>: Box<Expr> = {
-    Tier<Op,NextTier> Op NextTier => Box::new(Expr::Op(<>)),
+Tier<Op, NextTier>: Box<Expr> = {
+    Tier<Op, NextTier> Op NextTier => Box::new(Expr::Op(<>)),
     NextTier
 };
 
 pub Expr = Tier<ExprOp, Factor>;
 Factor = Tier<FactorOp, Term>;
 
-ExprOp: Opcode = { // (3)
+ExprOp: Opcode = {
     "+" => Opcode::Add,
     "-" => Opcode::Sub,
 };
@@ -27,12 +27,17 @@ FactorOp: Opcode = {
 
 Term: Box<Expr> = {
     Num => Box::new(Expr::Number(<>)),
+    "-" <Num> => Box::new(Expr::Negative(Box::new(Expr::Number(<>)))),
+
     Id =>  Box::new(Expr::Id(<>)),
+    "-" <Id> => Box::new(Expr::Negative(Box::new(Expr::Id(<>)))),
+    
+    "-(" <Expr> ")" => Box::new(Expr::Negative(<>)),
     "(" <Expr> ")"
 };
 
-Num: i32 = {
-    r"[0-9]+" =>? i32::from_str(<>)
+Num: u32 = {
+    r"[0-9]+" =>? u32::from_str(<>)
         .map_err(|_| ParseError::User {
             error: "number is too big"
         })

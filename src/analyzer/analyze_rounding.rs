@@ -76,20 +76,10 @@ fn handle_pow(
 /// # Returns
 ///
 /// This function returns a `Result` object with an empty Ok value if the operation is successful.
-///
-/// # Example
-///
-/// ```
-/// use analyze_rounding::visit;
-/// use FormulaConfig;
-///
-/// let expr = Expr::Number(5);
-/// let formula_config = FormulaConfig::new();
-/// visit(&expr, true, &formula_config);
-/// ```
 fn visit(expr: &Expr, rounding_direction: bool, formula_config: &mut FormulaConfig) -> Result<()> {
     match expr {
         Expr::Number(_) | Expr::Id(_) | Expr::Error => (),
+        Expr::Negative(nexpr) => visit(nexpr, !rounding_direction, formula_config)?,
         Expr::Op(left, op, right) => {
             let (left_rounding, right_rounding) = match op {
                 Opcode::Add => (rounding_direction, rounding_direction),

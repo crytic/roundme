@@ -89,7 +89,7 @@ fn find_less_greater_than_one(expr: &Expr, formula_config: &mut FormulaConfig) {
 
 fn visit(expr: &Expr, formula_config: &mut FormulaConfig) {
     match expr {
-        Expr::Number(_) | Expr::Id(_) | Expr::Error => (),
+        Expr::Number(_) | Expr::Id(_) | Expr::Negative(_) | Expr::Error => (),
         Expr::Op(left, op, right) => {
             if let Opcode::Pow = op {
                 // We ignore if the following fail
