@@ -64,6 +64,20 @@ fn simplify_div(lnv: (bool, Box<Expr>), rnv: (bool, Box<Expr>), r: RefCell<Round
     Box::new(expr)
 }
 
+fn simplify_pow(lnv: (bool, Box<Expr>), rnv: (bool, Box<Expr>)) -> Box<Expr> {
+    let expr = if rnv.0 {
+        Expr::Op(
+            Box::new(Expr::Number(1)), 
+            Opcode::Div(RefCell::new(Rounding::Init)), 
+            Box::new(Expr::Op(lnv.1, Opcode::Pow, rnv.1))
+        )
+    } else {
+        Expr::Op(lnv.1, Opcode::Pow, rnv.1)
+    };
+
+    Box::new(expr)
+}
+
 /// Simplifies the signs to bring the negative sign from values to the operations
 /// and finally bring it out to the expression level if possible
 /// It also reagganges the addition and substration formula to make them look better
@@ -89,7 +103,7 @@ pub fn simplify_sign(expr: Box<Expr>) -> Box<Expr> {
                 Opcode::Sub => simplify_sub(lnv, rnv),
                 Opcode::Mul(r) => simplify_mul(lnv, rnv, r),
                 Opcode::Div(r) => simplify_div(lnv, rnv, r),
-                Opcode::Pow => Box::new(Expr::Op(lnv.1, op, rnv.1))
+                Opcode::Pow => simplify_pow(lnv, rnv),
             }
         },
         _ => expr
