@@ -37,7 +37,7 @@ round_up: true
 less_than_one: ["a * b"] # optional
 greater_than_one: ["c"] # optional
 ```
-- `formula` contains the formula to be analyze. All the numeric literals and identifiers are parsed as positive values, use the `-` sign to include negative values in the formula. The negative sign of the base in the exponential operations are ignored.
+- `formula` contains the formula to be analyzed. All the numeric literals and identifiers are parsed as positive values, use the `-` sign to include negative values in the formula. The negative sign of the base in the exponential operations are ignored.
 - `round_up` determines if the result of the formula should round up or down
 - `less_than_one` is used for the `**` [rules](#rules) *(raw string comparison and sensible to space)*
 - `greater_than_one` is used for the `**` [rules](#rules) *(raw string comparison and sensible to space)*

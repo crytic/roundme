@@ -14,9 +14,7 @@ pub fn analyze(formula_config: &mut FormulaConfig) -> anyhow::Result<Box<Expr>> 
         anyhow::anyhow!("Error occured while parsing the formula {}: {}", formula, e)
     })?;
 
-    println!("parsed    : {ast}");
     let simplified_ast = simplify_expr::simplify_sign(ast);
-    println!("simplified: {simplified_ast}");
 
     analyze_rounding::analyze(&simplified_ast, formula_config.round_up, formula_config)?;
 
