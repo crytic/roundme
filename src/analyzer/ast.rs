@@ -7,9 +7,11 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub enum Expr {
     /// A numeric literal.
-    Number(i32),
+    Number(u32),
     /// An identifier.
     Id(String),
+    /// An identifier for a negative number
+    Negative(Box<Expr>),
     /// An operation with two operands.
     Op(Box<Expr>, Opcode, Box<Expr>),
     /// An error expression.
@@ -63,6 +65,7 @@ impl Display for Expr {
         match &self {
             Expr::Number(n) => write!(fmt, "{n}"),
             Expr::Id(ref n) => write!(fmt, "{n}"),
+            Expr::Negative(ref n) => write!(fmt, "(-{n})"),
             Expr::Op(ref l, op, ref r) => write!(fmt, "({l} {op} {r})"),
             Expr::Error => write!(fmt, "error"),
         }

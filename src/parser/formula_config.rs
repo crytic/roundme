@@ -28,6 +28,12 @@ impl Default for FormulaConfig {
 }
 
 impl FormulaConfig {
+    pub fn new(formula: String, round_up: bool, less_than_one: Option<Vec<String>>, greater_than_one: Option<Vec<String>>) -> FormulaConfig {
+        FormulaConfig { formula, round_up, less_than_one, greater_than_one }
+    }
+}
+
+impl FormulaConfig {
     // Add a value to the `less_than_one` list
     pub fn add_less_than_one(&mut self, value: String) {
         match self.less_than_one {
